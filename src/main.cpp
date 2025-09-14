@@ -20,7 +20,7 @@ int main(int argc, char* args[])
         {   
             mainGame.gameHandleEvent(gameRunning, event);
             mainGame.gameRenderClear();
-            mainGame.gameRenderEntity(slimeTexture);
+            mainGame.gameRenderEntity(slimeTexture, 0, 0);
             mainGame.gameRenderDisplay();
         }
     }

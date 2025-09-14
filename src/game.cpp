@@ -3,8 +3,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL.h>
 #include <string>
-#include <../include/Window.h>
-#include <../include/QueryTexture.h>
+// #include <../include/Window.h>
 
 Game::Game(std::string name, int w_width, int w_height)
 {
@@ -61,9 +60,24 @@ void Game::gameRenderDisplay()
     SDL_RenderPresent(this->renderer);
 }
 
-void Game::gameRenderEntity(SDL_Texture* tex, int x, int y, SDL_Rect srcRect)
+void Game::gameRenderEntity(SDL_Texture* tex, int x, int y, SDL_Rect* srcRect)
 {
-    SDL_RenderCopy(renderer, tex, srcRect, dstRect);
+    int textureWidth = 0;
+    int textureHeight = 0;
+
+    SDL_QueryTexture(tex,
+                        NULL, NULL, 
+                        &textureWidth, &textureHeight);
+
+    SDL_Rect dstRect = {x, y, textureWidth, textureHeight};
+
+    if(srcRect != NULL)
+    {
+        dstRect.w = srcRect->w;
+        dstRect.h = srcRect->h;
+    }
+
+    SDL_RenderCopy(renderer, tex, srcRect, &dstRect);
 }
 
 void Game::gameQuit()
