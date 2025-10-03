@@ -36,14 +36,6 @@ Game::Game(std::string name, int w_width, int w_height)
     }
 }
 
-void Game::gameHandleEvent(bool &gameRunning, SDL_Event& event)
-{
-    if(event.type == SDL_QUIT)
-    {
-        gameRunning = false; 
-    }
-}
-
 SDL_Texture* Game::loadTexture(std::string path)
 {
     return IMG_LoadTexture(this->renderer, path.c_str());
@@ -60,7 +52,7 @@ void Game::gameRenderDisplay()
     SDL_RenderPresent(this->renderer);
 }
 
-void Game::gameRenderEntity(SDL_Texture* tex, int x, int y, SDL_Rect* srcRect)
+void Game::gameRenderEntity(SDL_Texture* tex, int x, int y, SDL_Rect* srcRect, double angel, SDL_Point* center, SDL_RendererFlip flip)
 {
     int textureWidth = 0;
     int textureHeight = 0;
@@ -77,7 +69,19 @@ void Game::gameRenderEntity(SDL_Texture* tex, int x, int y, SDL_Rect* srcRect)
         dstRect.h = srcRect->h;
     }
 
-    SDL_RenderCopy(renderer, tex, srcRect, &dstRect);
+    SDL_RenderCopyEx(renderer,
+                    tex,
+                    srcRect,
+                    &dstRect,
+                    angel,
+                    center,
+                    flip);
+}
+
+void Game::gameRenderRect(SDL_Rect dstRect)
+{
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_RenderFillRect(renderer, &dstRect);
 }
 
 void Game::gameQuit()

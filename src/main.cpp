@@ -1,30 +1,52 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <../include/Game.h>
-#include <../include/Window.h>
+#include "../include/Game.h"
+#include "../include/Window.h"
+#include "../include/Slame.h"
+#include "../include/Background.h"
+#include <../include/Zombie.h>
 
 int main(int argc, char* args[])
 {
-    Game mainGame("unknown game", Window::windowWidth, Window::windowHeight);
+    Slame mainCharacter;
+
+    Game mainGame("Slame VS zombie", Window::windowWidth, Window::windowHeight);
+
+    Zombie zombie_chars(mainGame);
+
+    Background gBack(mainGame);
 
     bool gameRunning = true;
 
     SDL_Event event;
 
-    SDL_Texture* slimeTexture = mainGame.loadTexture("assets/images/a_slime.png");
+    SDL_Rect warningRect = {
+        60,
+        0,
+        10,
+        Window::windowHeight
+    };
 
     while(gameRunning)
     {
         while(SDL_PollEvent(&event))
         {   
-            mainGame.gameHandleEvent(gameRunning, event);
-            mainGame.gameRenderClear();
-            mainGame.gameRenderEntity(slimeTexture, 0, 0);
-            mainGame.gameRenderDisplay();
+            if(event.type == SDL_QUIT)
+            {
+                gameRunning = false;
+            }
+            mainCharacter.handleEvent(event);
         }
+        mainGame.gameRenderClear();
+        mainCharacter.move();
+        gBack.backgroundRender(mainGame);
+        mainCharacter.loadTexForSlame(mainGame);
+        mainCharacter.renderSlameTex(mainGame);
+        mainGame.gameRenderRect(warningRect);
+        zombie_chars.renderZombie(mainGame);
+        mainGame.gameRenderDisplay();
     }
-    SDL_DestroyTexture(slimeTexture); 
     mainGame.gameQuit();
     return 0;
 }
